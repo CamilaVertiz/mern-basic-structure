@@ -1,0 +1,25 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Custom Colors Guide */
+/* wisteria_light   #AB6BB3 */
+/* wisteria         #876BB3 */
+/* butterfly_bush   #5F4B7D */
+/* wild_blue_yonder #7278B3 */
+/* blue_bayoux      #4F547D */
+
+a{
+   text-decoration: none;
+   color: #ffffff;
+}
