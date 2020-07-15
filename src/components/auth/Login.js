@@ -1,6 +1,7 @@
 import React, {useState, useContext} from 'react';
 import Context from '../../context/Context';
 import axios from 'axios';
+import Error from '../layout/Error';
 import { useHistory } from "react-router-dom";
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -44,6 +45,7 @@ const Login = () => {
   const { setUserData } = useContext(Context);
   const history = useHistory();
   const [{ email, password }, setState] = useState(initialState);
+  const [error, setError] = useState();
 
   const onChange = e => {
     const { name, value } = e.target;
@@ -52,13 +54,17 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const loginRes = await axios.post('http://localhost:5000/users/login', { email, password })    
-    setUserData({
-      token: loginRes.data.token,
-      user: loginRes.data.user,
-   });
-   localStorage.setItem('auth-token', loginRes.data.token);    
-   history.push('/');
+    try{
+        const loginRes = await axios.post('http://localhost:5000/users/login', { email, password })    
+        setUserData({
+          token: loginRes.data.token,
+          user: loginRes.data.user,
+	    });
+	    localStorage.setItem('auth-token', loginRes.data.token);    
+	    history.push('/');
+    } catch(err){
+        err.response.data.message && setError(err.response.data.message);
+    }
   };
 
   const classes = useStyles();
@@ -72,6 +78,7 @@ const Login = () => {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
+        {error && (<Error message={error} clearError={()=> setError(undefined)}/>)}
         <form className={classes.form} onSubmit={handleSubmit}>
           <TextField variant="outlined" margin="normal" required fullWidth label="Email Address" value={email} name="email" onChange={onChange} />
           <TextField variant="outlined" margin="normal" required fullWidth label="Password" value={password} name="password" type="password" onChange={onChange} />

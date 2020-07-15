@@ -1,6 +1,7 @@
 import React, {useState, useContext} from 'react';
 import Context from '../../context/Context';
 import axios from 'axios';
+import Error from '../layout/Error';
 import { Link } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
@@ -47,6 +48,7 @@ const SignUp = () => {
   const classes = useStyles();
   const history = useHistory();
   const [{ username, email, password }, setState] = useState(initialState);
+  const [error, setError] = useState();
 
   const onChange = e => {
     const { name, value } = e.target;
@@ -55,14 +57,18 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    axios.post('http://localhost:5000/users/register', { username, email, password });
-    const loginRes = await axios.post('http://localhost:5000/users/login', { email, password });
-    setUserData({
-       token: loginRes.data.token,
-       user: loginRes.data.user,
-    });
-    localStorage.setItem('auth-token', loginRes.data.token);    
-    history.push('/');
+    try{
+      axios.post('http://localhost:5000/users/register', { username, email, password });
+      const loginRes = await axios.post('http://localhost:5000/users/login', { email, password });
+      setUserData({
+        token: loginRes.data.token,
+        user: loginRes.data.user,
+      });
+      localStorage.setItem('auth-token', loginRes.data.token);    
+      history.push('/');
+    } catch(err){
+       err.response.data.message && setError(err.response.data.message);
+    }
   };
 
   return (
@@ -75,6 +81,7 @@ const SignUp = () => {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
+        {error && (<Error message={error} clearError={()=> setError(undefined)}/>)}
         <form className={classes.form} onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
